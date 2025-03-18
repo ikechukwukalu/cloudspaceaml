@@ -23,5 +23,15 @@
                 "AML": "Cloudspace\\AML\\Facades\\AML"
             }
         }
-    }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "authors": [
+        {
+            "name": "Ikechukwu Kalu",
+            "email": "kalu.ikechukwu@cloudspacetechs.com"
+        }
+    ]
 }
