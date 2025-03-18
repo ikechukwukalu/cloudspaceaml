@@ -1,8 +1,6 @@
 # REQUIRE PIN
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ikechukwukalu/cloudspaceaml?style=flat-square)](https://packagist.org/packages/ikechukwukalu/cloudspaceaml)
-[![Quality Score](https://img.shields.io/scrutinizer/quality/g/ikechukwukalu/cloudspaceaml/main?style=flat-square)](https://scrutinizer-ci.com/g/ikechukwukalu/cloudspaceaml/)
-[![Code Quality](https://img.shields.io/codefactor/grade/github/ikechukwukalu/cloudspaceaml?style=flat-square)](https://www.codefactor.io/repository/github/ikechukwukalu/cloudspaceaml)
 [![Known Vulnerabilities](https://snyk.io/test/github/ikechukwukalu/cloudspaceaml/badge.svg?style=flat-square)](https://security.snyk.io/package/composer/ikechukwukalu%2Fcloudspaceaml)
 [![Github Workflow Status](https://img.shields.io/github/actions/workflow/status/ikechukwukalu/cloudspaceaml/cloudspaceaml.yml?branch=main&style=flat-square)](https://github.com/ikechukwukalu/cloudspaceaml/actions/workflows/cloudspaceaml.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/ikechukwukalu/cloudspaceaml?style=flat-square)](https://packagist.org/packages/ikechukwukalu/cloudspaceaml)
