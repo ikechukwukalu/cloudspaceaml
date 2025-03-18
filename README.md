@@ -19,7 +19,7 @@ A simple Laravel package that provides a middleware which will require users to 
 ## STEPS TO INSTALL
 
 ``` shell
-composer require ikechukwukalu/cloudspaceaml
+composer require cloudspace/aml
 ```
 
 ## LICENSE
