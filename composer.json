@@ -5,12 +5,14 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Cloudspace\\AML\\": "src/"
+            "Cloudspace\\AML\\": "src/",
+            "Cloudspace\\AML\\Facades\\": "src/Facades/"
         }
     },
     "require": {
         "php": ">=8.0",
-        "illuminate/support": "^9.0|^10.0"
+        "illuminate/support": "^9.0|^10.0",
+        "illuminate/http": "^9.0|^10.0"
     },
     "extra": {
         "laravel": {
