@@ -1,0 +1,25 @@
+{
+    "name": "cloudspace/aml",
+    "description": "Laravel package for Moov Watchman PII-based sanctions screening",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Cloudspace\\AML\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0",
+        "illuminate/support": "^9.0|^10.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cloudspace\\AML\\AMLServiceProvider"
+            ],
+            "aliases": {
+                "AML": "Cloudspace\\AML\\Facades\\AML"
+            }
+        }
+    }
+}
