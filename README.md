@@ -41,4 +41,4 @@ dd($response);
 
 ## LICENSE
 
-The RP package is an open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The CloudSpaceAML package is an open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
