@@ -22,7 +22,7 @@ A simple Laravel package that provides a middleware which will require users to 
 composer require cloudspace/aml
 ```
 
-## USAGE
+## USAGE BY FACADE
 
 ```php
 use Cloudspace\AML\Facades\AML;
@@ -36,7 +36,28 @@ $response = AML::checkSanctions([
 ]);
 
 dd($response);
+```
 
+## USAGE BY API
+
+```js
+fetch('http://127.0.0.1:8000/api/aml/check', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+        name: 'John Doe',
+        birthDate: '1990-01-01',
+        gender: 'A1234567',
+        bvn: '111111',
+        nin: '111111'
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ```
 
 ## LICENSE
