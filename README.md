@@ -31,7 +31,7 @@ $response = AML::checkSanctions([
     'name' => 'John Doe',
     'birthDate' => '1990-01-01',
     'gender' => 'A1234567',
-    'bvn' => '111111'
+    'bvn' => '111111',
     'nin' => '111111'
 ]);
 
