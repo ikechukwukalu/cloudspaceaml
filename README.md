@@ -62,11 +62,25 @@ fetch('http://127.0.0.1:8000/api/aml/check', {
         'Accept': 'application/json'
     },
     body: JSON.stringify({
-        name: 'John Doe',
-        birthDate: '1990-01-01',
-        gender: 'A1234567',
-        bvn: '111111',
-        nin: '111111'
+        'name': 'Nicolas Maduro',
+        'birthDate': '1962-11-23',
+        'gender': 'male',
+
+        /**
+         * Optional Array Fields
+         */
+        'address': {
+            '17 Maryland St, Boston, MA 02125, USA'
+        },
+        'phone': {
+            '+19037382902'
+        },
+        'email': {
+            'johndoe@xyz.co'
+        },
+        'website': {
+            'https://xyz.co'
+        }
     })
 })
 .then(response => response.json())
