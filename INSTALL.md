@@ -1,4 +1,4 @@
-# Moov Watchman Integration with NGINX + Docker + Supervisor
+# Moov Watchman Setup on Ubuntu
 
 This guide documents the complete setup process for running the [Moov Watchman](https://github.com/moov-io/watchman) sanctions screening API using Docker, managed by Supervisor, and exposed via NGINX on port 80 using a reverse proxy.
 
@@ -8,38 +8,72 @@ This guide documents the complete setup process for running the [Moov Watchman](
 
 - Ubuntu 20.04 or later
 - Docker installed
+- Docker Compose (v1 or v2)
 - Supervisor installed
 - NGINX installed
 
 ---
 
-## 🔧 Step 1: Create the Moov Watchman Docker Container
+## 🐳 Step 1: Create a Docker Container with Volume Persistence
 
-We start by creating the container in a stable way so Supervisor can manage it properly.
+If you are not using Docker Compose, you can manually create the container once and manage it using Supervisor. This method ensures data persistence using Docker volumes:
 
 ```bash
 docker create \
   --name moov-watchman \
   -p 127.0.0.1:8084:8084 \
+  -v /moov-watchman-data:/root/.watchman \
   moov/watchman:latest
 ```
 
-This command:
+This setup:
 
-- Creates a reusable container named `moov-watchman`
-- Binds container port 8084 to `127.0.0.1:8084` (local-only)
+- Binds container port 8084 to local port 8084
+- Persists data in `/moov-watchman-data` on the host, mapped to the container’s internal `/root/.watchman` directory
 
 ---
 
-## 🔁 Step 2: Set Up Supervisor
+## 🔧 Step 2: Create the Moov Watchman Docker Compose File (Alternative Setup)
 
-Create a Supervisor config file at:
+Alternatively, if you prefer Docker Compose:
 
 ```bash
-sudo nano /etc/supervisor/conf.d/moov-watchman-aml.conf
+sudo mkdir -p /moov-watchman-aml
+sudo nano /moov-watchman-aml/docker-compose.yml
 ```
 
-Paste the following:
+Paste:
+
+```yaml
+version: '3.8'
+services:
+  watchman:
+    image: moov/watchman:latest
+    ports:
+      - "127.0.0.1:8084:8084"
+    volumes:
+      - /moov-watchman-data:/root/.watchman
+    restart: always
+```
+
+Then test it manually:
+
+```bash
+cd /moov-watchman-aml
+sudo docker-compose up
+```
+
+If using Docker Compose v2:
+
+```bash
+docker compose up
+```
+
+---
+
+## 🔁 Step 3: Set Up Supervisor
+
+### ▶️ Option 1: If you used `docker create`
 
 ```ini
 [program:moov-watchman-aml]
@@ -48,13 +82,24 @@ autostart=true
 autorestart=true
 stopasgroup=true
 killasgroup=true
-user=kalu
 redirect_stderr=true
 stdout_logfile=/moov-watchman-aml/program.log
 stopwaitsecs=3600
 ```
 
-> 💡 Adjust the `user` if necessary
+### ▶️ Option 2: If you're using Docker Compose
+
+```ini
+[program:moov-watchman-aml]
+command=docker compose --file /moov-watchman-aml/docker-compose.yml up
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+redirect_stderr=true
+stdout_logfile=/moov-watchman-aml/program.log
+stopwaitsecs=3600
+```
 
 Then reload Supervisor:
 
@@ -64,15 +109,9 @@ sudo supervisorctl update
 sudo supervisorctl start moov-watchman-aml
 ```
 
-To view logs:
-
-```bash
-tail -f /moov-watchman-aml/program.log
-```
-
 ---
 
-## 🌐 Step 3: Configure NGINX Reverse Proxy
+## 🌐 Step 4: Configure NGINX Reverse Proxy
 
 Edit your NGINX default config:
 
@@ -133,5 +172,7 @@ You should get a valid JSON response from Moov Watchman 🎉
 
 ## 🧠 Notes
 
-- All logic now lives inside the default NGINX block under `/moov-watchman-aml/`
-- `/moov-watchman-aml/` must be preserved when calling the API unless you rewrite it
+- You can choose either a `docker create` + `start` approach with volumes, or Docker Compose
+- Supervisor must track the foreground process, so do **not use `-d`** in the command
+- If using Compose v2, use `docker compose` instead of `docker-compose`
+- No need for a separate moov-watchman-aml.conf in NGINX — everything lives inside `default`
