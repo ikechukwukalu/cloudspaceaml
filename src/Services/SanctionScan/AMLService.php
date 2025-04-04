@@ -1,12 +1,14 @@
 <?php
 
-namespace Cloudspace\AML;
+namespace Cloudspace\AML\Services\SanctionScan;
 
-use Illuminate\Http\Response;
+use Cloudspace\AML\Traits\ResponseData;
 use Illuminate\Support\Facades\Http;
 
 class AMLService
 {
+    use ResponseData;
+
     protected $baseUrl;
 
     public function __construct()
@@ -46,22 +48,5 @@ class AMLService
         $response = Http::get("{$this->baseUrl}/search", $sanctionData);
 
         return $this->responseData($response->successful(), $response->body());
-    }
-
-    private function responseData(bool $success, mixed $data, string|null $customMsg = null): array
-    {
-        $status = $success ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST;
-        $message = $success ? 'We\'ve got a response' : 'We encountered some errors';
-
-        if ($customMsg) {
-            $message = $customMsg;
-        }
-
-        return [
-            'success' => $success,
-            'status' => $status,
-            'message' => $message,
-            'data' => $data,
-        ];
     }
 }
