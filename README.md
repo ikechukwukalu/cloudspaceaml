@@ -112,7 +112,7 @@ AML_ALERT_EMAIL=your_compliance_email@domain.com
 
 ## USAGE BY FACADE
 
-### 🧠 PII-Based Risk Scan
+### PII-Based Risk Scan
 
 ```php
 use Cloudspace\AML\Facades\RiskScanner;
@@ -148,7 +148,7 @@ dd($response->toArray());
 
 ## USAGE BY API
 
-### 📡 Risk Scan via API
+### Risk Scan via API
 
 ```http
 POST /api/aml/scan-user
@@ -180,7 +180,7 @@ POST /api/aml/scan-user
 }
 ```
 
-### 🧾 List Risk Scan History
+### List Risk Scan History
 
 ```http
 GET /api/aml/scans?risk_level=high&name=John&from=2025-04-01
@@ -188,7 +188,7 @@ GET /api/aml/scans?risk_level=high&name=John&from=2025-04-01
 
 Returns paginated risk scan history with match breakdowns.
 
-### 🧾 Download PDF Risk Report
+### Download PDF Risk Report
 
 ```http
 GET /api/aml/scans/{id}/pdf
@@ -198,7 +198,7 @@ Generates a full PDF report with user scan result and confidence levels.
 
 ---
 
-## ⏰ Daily Auto-Scanning of New Users
+## Daily Auto-Scanning of New Users
 
 Scans newly created users every day at 2 AM (scheduler required):
 
@@ -208,7 +208,7 @@ Scans newly created users every day at 2 AM (scheduler required):
 
 ---
 
-## 📧 High-Risk Email Alerts
+## High-Risk Email Alerts
 
 If `risk_level` is `high`, an alert email will be sent to the address in your `.env`:
 
