@@ -22,6 +22,28 @@ Laravel package for AML (Anti-Money Laundering) logic including PII-based intell
 composer require cloudspace/aml
 ```
 
+Publish the config and migration files:
+
+```bash
+php artisan vendor:publish --provider="Cloudspace\AML\Providers\AmlServiceProvider"
+php artisan migrate
+```
+
+---
+
+## Configuration
+
+Update your `.env` file:
+
+```env
+AML_WEB_SEARCH_DRIVER=bing
+BING_SEARCH_API_KEY=your_bing_key
+CONTEXTUAL_API_KEY=your_contextual_key
+AML_ALERT_EMAIL=your_compliance_email@domain.com
+```
+
+---
+
 ## USAGE BY FACADE
 
 ```php
@@ -51,6 +73,8 @@ $response = AML::checkSanctions([
 
 dd($response);
 ```
+
+---
 
 ## USAGE BY API
 
@@ -86,26 +110,6 @@ fetch('http://127.0.0.1:8000/api/aml/check', {
 .then(response => response.json())
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));
-```
-
-Publish the config and migration files:
-
-```bash
-php artisan vendor:publish --provider="Cloudspace\AML\Providers\AmlServiceProvider"
-php artisan migrate
-```
-
----
-
-## Configuration
-
-Update your `.env` file:
-
-```env
-AML_WEB_SEARCH_DRIVER=bing
-BING_SEARCH_API_KEY=your_bing_key
-CONTEXTUAL_API_KEY=your_contextual_key
-AML_ALERT_EMAIL=your_compliance_email@domain.com
 ```
 
 ---
