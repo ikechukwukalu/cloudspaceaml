@@ -15,7 +15,7 @@ class RiskAlertMail extends Mailable
 
     public function build(): self
     {
-        return $this->subject("🚨 HIGH-RISK DETECTED: {$this->result->full_name}")
+        return $this->subject("HIGH-RISK DETECTED: {$this->result->full_name}")
             ->view('aml::emails.risk-alert')
             ->with(['result' => $this->result]);
     }
