@@ -10,17 +10,14 @@ class RiskScoreService
             return 'low';
         }
 
-        $score = 0;
-        foreach ($matches as $match) {
-            $score += $match['confidence'] ?? 50;
+        if (collect($matches)->contains(fn ($m) => $m['confidence'] >= 85)) {
+            $riskLevel = 'high';
+        } elseif (collect($matches)->contains(fn ($m) => $m['confidence'] >= 60)) {
+            $riskLevel = 'medium';
+        } else {
+            $riskLevel = 'low';
         }
 
-        $average = $score / count($matches);
-
-        return match (true) {
-            $average >= 80 => 'high',
-            $average >= 50 => 'medium',
-            default        => 'low',
-        };
+        return $riskLevel;
     }
 }

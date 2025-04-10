@@ -18,7 +18,18 @@ class RiskScanViewerController extends Controller
     public function index(Request $request, RiskScanViewerService $service): JsonResponse
     {
         $filters = $request->only(['risk_level', 'name', 'from', 'to']);
-        $data = $service->list($filters);
+        // $data = $service->list($filters);
+        $data = $service->list($filters)->through(function ($scan) {
+            $scan->matches->transform(fn ($match) => [
+                'source' => $match->source,
+                'type' => $match->match_type,
+                'confidence' => $match->confidence,
+                'description' => $match->description,
+                'link' => $match->source_url,
+            ]);
+
+            return $scan;
+        });
         $response = $this->responseData(true,'Risk scan results retrieved successfully', $data);
 
         return response()->json($response, Response::HTTP_OK);

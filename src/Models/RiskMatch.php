@@ -13,6 +13,8 @@ class RiskMatch extends Model
         'match_type',
         'description',
         'confidence',
+        'source_url',
+        'match_hash',
     ];
 
     public function result(): BelongsTo

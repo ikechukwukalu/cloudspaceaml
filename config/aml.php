@@ -6,10 +6,10 @@ return [
     'optional_array_list' => ['address', 'phone', 'email', 'website'],
     'black_list' => ['ssn', 'passport', 'bank_account'],
     'web_search' => [
-        'driver' => env('AML_WEB_SEARCH_DRIVER', 'bing'),
-
+        'driver' => env('AML_WEB_SEARCH_DRIVER', 'puppeteer'),
         'bing_api_key' => env('BING_SEARCH_API_KEY'),
         'contextual_api_key' => env('CONTEXTUAL_API_KEY'),
+        'puppeteer_source' => env('AML_PUPPETEER_SOURCE', 'bing'),
     ],
     'google_api_key' => env('GOOGLE_SEARCH_API_KEY'),
     'google_cse_id' => env('GOOGLE_CSE_ID'),

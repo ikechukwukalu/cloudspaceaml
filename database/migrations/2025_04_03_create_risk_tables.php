@@ -20,8 +20,10 @@ return new class extends Migration {
         Schema::create('risk_matches', function (Blueprint $table) {
             $table->id();
             $table->foreignId('risk_scan_result_id')->constrained('risk_scan_results')->onDelete('cascade');
+            $table->string('match_hash')->unique()->nullable();
             $table->string('source');
             $table->string('match_type');
+            $table->text('source_url')->nullable();
             $table->text('description')->nullable();
             $table->unsignedTinyInteger('confidence')->default(50);
             $table->timestamps();

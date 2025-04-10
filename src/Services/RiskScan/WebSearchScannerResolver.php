@@ -3,6 +3,7 @@
 namespace Cloudspace\AML\Services\RiskScan;
 
 use Cloudspace\AML\Contracts\WebSearchScannerInterface;
+use Cloudspace\AML\Services\RiskScan\Crawlers\PuppeteerCrawler;
 
 class WebSearchScannerResolver implements WebSearchScannerInterface
 {
@@ -11,14 +12,18 @@ class WebSearchScannerResolver implements WebSearchScannerInterface
     public function __construct()
     {
         $this->scanner = match (config('aml.web_search.driver')) {
-            'bing' => app(BingWebSearchScanner::class),
-            'contextual' => app(ContextualWebNewsScanner::class),
+            'bing'        => app(BingWebSearchScanner::class),
+            'contextual'  => app(ContextualWebNewsScanner::class),
+            'crawler'     => app(CrawlerWebSearchScanner::class),
+            'puppeteer'   => app(PuppeteerCrawler::class),
             default => app(BingWebSearchScanner::class)
         };
     }
 
-    public function scan(string $fullName): array
+    public function scan(string $fullName, null|int $scanResultId = null): array
     {
-        return $this->scanner->scan($fullName);
+        \Illuminate\Support\Facades\Log::info($fullName);
+        \Illuminate\Support\Facades\Log::info($scanResultId);
+        return $this->scanner->scan($fullName, $scanResultId);
     }
 }

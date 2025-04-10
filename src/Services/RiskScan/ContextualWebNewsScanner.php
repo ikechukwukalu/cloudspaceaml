@@ -16,7 +16,7 @@ class ContextualWebNewsScanner implements WebSearchScannerInterface
      * @param string $fullName
      * @return array
      */
-    public function scan(string $fullName): array
+    public function scan(string $fullName, null|int $scanResultId = null): array
     {
         $apiKey = config('aml.web_search.contextual_api_key');
         $query = urlencode("$fullName fraud OR scam OR efcc OR laundering");

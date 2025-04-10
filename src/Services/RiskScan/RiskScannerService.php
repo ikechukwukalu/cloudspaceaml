@@ -20,12 +20,23 @@ class RiskScannerService
             'risk_level' => 'low',
         ]);
 
+        $result->refresh();
+
         // 2. Crawl and match
         $matches = app(SanctionsScanner::class)->scan($name);
         $matches = array_merge(
             $matches,
-            app(WebSearchScannerInterface::class)->scan($name)
+            app(WebSearchScannerInterface::class)->scan($name, $result->id)
         );
+
+        $webScanner = app(WebSearchScannerInterface::class);
+
+        // Inject risk_scan_result_id only if supported
+        if (method_exists($webScanner, 'withScanResultId')) {
+            $webScanner = $webScanner->withScanResultId($result->id);
+        }
+
+        $matches = $webScanner->scan($name);
 
         // 3. Save matches
         foreach ($matches as $match) {
