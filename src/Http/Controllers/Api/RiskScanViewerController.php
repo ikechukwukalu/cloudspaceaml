@@ -57,4 +57,31 @@ class RiskScanViewerController extends Controller
 
         return $pdf->download("risk-report-{$result->id}.pdf");
     }
+
+    public function exportMatchesToCsv($id)
+    {
+        $scan = RiskScanResult::with('matches')->findOrFail($id);
+
+        $csv = fopen('php://temp', 'r+');
+        fputcsv($csv, ['Source', 'Match Type', 'Description', 'Confidence', 'URL']);
+
+        foreach ($scan->matches as $match) {
+            fputcsv($csv, [
+                $match->source,
+                $match->match_type,
+                $match->description,
+                $match->confidence,
+                $match->source_url,
+            ]);
+        }
+
+        rewind($csv);
+        $output = stream_get_contents($csv);
+        fclose($csv);
+
+        return Response::make($output, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=risk-matches-{$scan->id}.csv",
+        ]);
+    }
 }

@@ -10,6 +10,7 @@ return [
         'bing_api_key' => env('BING_SEARCH_API_KEY'),
         'contextual_api_key' => env('CONTEXTUAL_API_KEY'),
         'puppeteer_source' => env('AML_PUPPETEER_SOURCE', 'bing'),
+        'use_corruption_cases' => env('AML_USE_CORRUPTION_CASES', true),
     ],
     'google_api_key' => env('GOOGLE_SEARCH_API_KEY'),
     'google_cse_id' => env('GOOGLE_CSE_ID'),

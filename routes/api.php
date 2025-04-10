@@ -15,6 +15,7 @@ Route::prefix('aml')->group(function () {
         Route::get('/', [RiskScanViewerController::class, 'index']);
         Route::get('/{id}', [RiskScanViewerController::class, 'show']);
         Route::get('/{id}/pdf', [RiskScanViewerController::class, 'downloadPdf']);
+        Route::get('/{id}/matches/export', [RiskScanViewerController::class, 'exportMatchesToCsv']);
     });
 
 });

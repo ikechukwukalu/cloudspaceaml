@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->string('match_type');
             $table->text('source_url')->nullable();
             $table->text('description')->nullable();
+            $table->longText('response_payload')->nullable();
             $table->unsignedTinyInteger('confidence')->default(50);
             $table->timestamps();
         });

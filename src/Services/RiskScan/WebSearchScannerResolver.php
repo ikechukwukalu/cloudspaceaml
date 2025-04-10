@@ -13,6 +13,7 @@ class WebSearchScannerResolver implements WebSearchScannerInterface
     {
         $this->scanner = match (config('aml.web_search.driver')) {
             'bing'        => app(BingWebSearchScanner::class),
+            'corruptioncases' => app(CorruptionCasesScanner::class),
             'contextual'  => app(ContextualWebNewsScanner::class),
             'crawler'     => app(CrawlerWebSearchScanner::class),
             'puppeteer'   => app(PuppeteerCrawler::class),

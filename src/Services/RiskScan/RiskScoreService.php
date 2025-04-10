@@ -10,9 +10,17 @@ class RiskScoreService
             return 'low';
         }
 
-        if (collect($matches)->contains(fn ($m) => $m['confidence'] >= 85)) {
+        $contains = collect($matches);
+
+        if ($contains->contains(fn ($m) =>
+                ($m['confidence'] ?? 0) >= 85 ||
+                ($m['match_type'] ?? '') === 'corruption registry'
+            )
+        ) {
             $riskLevel = 'high';
-        } elseif (collect($matches)->contains(fn ($m) => $m['confidence'] >= 60)) {
+        } elseif ($contains->contains(fn ($m) => $m['confidence'] >= 85)) {
+            $riskLevel = 'high';
+        } elseif ($contains->contains(fn ($m) => $m['confidence'] >= 60)) {
             $riskLevel = 'medium';
         } else {
             $riskLevel = 'low';

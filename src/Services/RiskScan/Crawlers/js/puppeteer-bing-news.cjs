@@ -42,47 +42,57 @@ function guessConfidence(text) {
     process.exit(1);
   }
 
+  const nameParts = fullName.toLowerCase().split(/\s+/);
   const query = encodeURIComponent(`${fullName} efcc fraud scam`);
   const url = `https://www.bing.com/search?q=${query}`;
 
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
+
   await page.setUserAgent('CloudspaceAMLBot/1.0 (+https://yourdomain.com/bot)');
   await page.goto(url, { waitUntil: 'domcontentloaded' });
 
-  await new Promise(resolve => setTimeout(resolve, 2000)); // allow JS to load
+  await new Promise(resolve => setTimeout(resolve, 2000));
 
   const results = await page.evaluate(() => {
     const articles = [];
 
     document.querySelectorAll('.b_algo').forEach(result => {
-        const titleEl = result.querySelector('h2 a');
-        const snippetEl = result.querySelector('.b_caption p');
+      const titleEl = result.querySelector('h2 a');
+      const snippetEl = result.querySelector('.b_caption p');
 
-        const title = titleEl?.innerText.trim();
-        const href = titleEl?.href;
-        const snippet = snippetEl?.innerText.trim() ?? '';
+      const title = titleEl?.innerText.trim();
+      const href = titleEl?.href;
+      const snippet = snippetEl?.innerText.trim() ?? '';
 
-        if (title && href) {
-            articles.push({
-                title,
-                snippet,
-                url: href,
-                source: 'Bing Web'
-            });
-        }
+      if (title && href) {
+        articles.push({
+          title,
+          snippet,
+          url: href,
+          source: 'Bing Web'
+        });
+      }
     });
 
     return articles;
   });
 
-  const flagged = results.map(r => ({
+  const flagged = results
+    .map(r => {
+      const content = `${r.title} ${r.snippet}`.toLowerCase();
+      const matchedParts = nameParts.filter(part => content.includes(part));
+      if (matchedParts.length < 2) return null;
+
+      return {
         source: r.source,
         match_type: 'web result',
         description: `${r.title}${r.snippet ? ' — ' + r.snippet : ''}`,
-        confidence: guessConfidence(`${r.title} ${r.snippet}`),
+        confidence: guessConfidence(content),
         source_url: r.url
-    }));
+      };
+    })
+    .filter(r => r !== null);
 
   console.log(JSON.stringify(flagged, null, 2));
   await browser.close();

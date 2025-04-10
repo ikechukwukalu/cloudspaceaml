@@ -15,6 +15,7 @@ class RiskMatch extends Model
         'confidence',
         'source_url',
         'match_hash',
+        'response_payload'
     ];
 
     public function result(): BelongsTo
