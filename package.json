@@ -1,0 +1,24 @@
+{
+    "name": "cloudspace-aml",
+    "version": "1.0.0",
+    "description": "AML package for PII risk scanning, Puppeteer-powered crawlers, and compliance automation.",
+    "main": "index.js",
+    "scripts": {
+        "scan": "node src/Services/RiskScan/Crawlers/js/puppeteer-bing-news.cjs"
+    },
+    "keywords": [
+        "laravel",
+        "aml",
+        "puppeteer",
+        "risk-scanning",
+        "bvn",
+        "nin",
+        "efcc",
+        "web-crawler"
+    ],
+    "author": "Ikechukwu Kalu",
+    "license": "MIT",
+    "dependencies": {
+        "puppeteer": "^24.6.1"
+    }
+}
