@@ -2,43 +2,41 @@
 
 namespace Cloudspace\AML\Services\RiskScan;
 
-use Cloudspace\AML\Contracts\WebSearchScannerInterface;
 use Cloudspace\AML\Mail\RiskAlertMail;
+use Cloudspace\AML\Models\RiskMatch;
 use Cloudspace\AML\Models\RiskScanLog;
 use Cloudspace\AML\Models\RiskScanResult;
 use Illuminate\Support\Facades\Mail;
 
 class RiskScannerService
 {
-    public function scan(string $name, null|string $bvn = null, null|string $nin = null): RiskScanResult
+    public function scan(array $data): RiskScanResult
     {
         // 1. Store base info
         $result = RiskScanResult::create([
-            'full_name' => $name,
-            'bvn' => $bvn,
-            'nin' => $nin,
-            'other_identifiable_code' => null,
-            'other_identifiable_type' => null,
-            'email' => null,
-            'phone' => null,
-            'gender' => null,
-            'date_of_birth' => null,
-            'address' => null,
-            'website' => null,
+            'full_name' => $data['full_name'] ?? null,
+            'bvn' => $data['bvn'] ?? null,
+            'nin' => $data['nin'] ?? null,
+            'other_identifiable_code' => $data['other_identifiable_code'] ?? null,
+            'other_identifiable_type' => $data['other_identifiable_type'] ?? null,
+            'email' => $data['email'] ?? null,
+            'phone' => $data['phone'] ?? null,
+            'gender' => $data['gender'] ?? null,
+            'date_of_birth' => $data['date_of_birth'] ?? null,
+            'address' => $data['address'] ?? null,
+            'website' => $data['website'] ?? null,
             'risk_level' => 'low',
         ]);
         $result->refresh();
 
         // 2. Crawl and match
-        $matches = $this->getMatches($result, $name, CorruptionCasesScanner::class);
-        $matches = array_merge(
-            $matches,
-            $this->getMatches($result, $name, BingWebScanner::class)
-        );
+        $matches = collect($this->getMatches($result, $data['full_name'], CorruptionCasesScanner::class))
+                        ->merge($this->getMatches($result, $data['full_name'], BingWebScanner::class))
+                        ->unique('match_hash')->toArray();
 
         // 3. Save matches
         foreach ($matches as $match) {
-            if (!$result->matches()->where('match_hash', $match['match_hash'])->exists()) {
+            if (!RiskMatch::where('match_hash', $match['match_hash'])->exists()) {
                 $result->matches()->create($match);
             }
         }
