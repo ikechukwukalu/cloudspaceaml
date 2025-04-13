@@ -9,9 +9,7 @@ return new class extends Migration {
     {
         Schema::create('risk_scan_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
-            $table->string('bvn')->nullable();
-            $table->string('nin')->nullable();
+            $table->foreignId('risk_scan_result_id')->constrained('risk_scan_results')->onDelete('cascade');
             $table->enum('risk_level', ['low', 'medium', 'high'])->default('low');
             $table->unsignedInteger('match_count')->default(0);
             $table->json('summary')->nullable(); // basic metadata

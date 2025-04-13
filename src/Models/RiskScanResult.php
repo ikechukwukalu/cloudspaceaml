@@ -13,9 +13,17 @@ class RiskScanResult extends Model
         'nin',
         'risk_level',
         'scanned_at',
+        'other_identifiable_code',
+        'other_identifiable_type',
+        'email',
+        'phone',
+        'gender',
+        'date_of_birth',
+        'address',
+        'website',
     ];
 
-    protected $dates = ['scanned_at'];
+    protected $dates = ['scanned_at', 'date_of_birth'];
 
     public function matches(): HasMany
     {

@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class RiskScanLog extends Model
 {
     protected $fillable = [
-        'full_name',
-        'bvn',
-        'nin',
+        'risk_scan_result_id',
         'risk_level',
         'match_count',
         'summary',

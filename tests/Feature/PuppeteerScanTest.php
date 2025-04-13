@@ -4,14 +4,14 @@ namespace Cloudspace\AML\Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\File;
-use Cloudspace\AML\Services\RiskScan\Crawlers\PuppeteerCrawler;
+use Cloudspace\AML\Services\RiskScan\Crawlers\BingWebScanner;
 
 class PuppeteerScanTest extends TestCase
 {
 
     public function test_it_scans_bing_news()
     {
-        $crawler = new PuppeteerCrawler;
+        $crawler = new BingWebScanner;
         $results = $crawler->scan('Emeka Anaga');
 
         $this->assertIsArray($results);

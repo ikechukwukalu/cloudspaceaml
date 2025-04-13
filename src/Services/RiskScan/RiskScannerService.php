@@ -17,30 +17,30 @@ class RiskScannerService
             'full_name' => $name,
             'bvn' => $bvn,
             'nin' => $nin,
+            'other_identifiable_code' => null,
+            'other_identifiable_type' => null,
+            'email' => null,
+            'phone' => null,
+            'gender' => null,
+            'date_of_birth' => null,
+            'address' => null,
+            'website' => null,
             'risk_level' => 'low',
         ]);
-
         $result->refresh();
 
         // 2. Crawl and match
-        $matches = app(SanctionsScanner::class)->scan($name);
+        $matches = $this->getMatches($result, $name, CorruptionCasesScanner::class);
         $matches = array_merge(
             $matches,
-            app(WebSearchScannerInterface::class)->scan($name, $result->id)
+            $this->getMatches($result, $name, BingWebScanner::class)
         );
-
-        $webScanner = app(WebSearchScannerInterface::class);
-
-        // Inject risk_scan_result_id only if supported
-        if (method_exists($webScanner, 'withScanResultId')) {
-            $webScanner = $webScanner->withScanResultId($result->id);
-        }
-
-        $matches = $webScanner->scan($name);
 
         // 3. Save matches
         foreach ($matches as $match) {
-            $result->matches()->create($match);
+            if (!$result->matches()->where('match_hash', $match['match_hash'])->exists()) {
+                $result->matches()->create($match);
+            }
         }
 
         // 4. Score
@@ -55,9 +55,7 @@ class RiskScannerService
         }
 
         RiskScanLog::create([
-            'full_name' => $name,
-            'bvn' => $bvn,
-            'nin' => $nin,
+            'risk_scan_result_id' => $result->id,
             'risk_level' => $result->risk_level,
             'match_count' => $result->matches->count(),
             'summary' => [
@@ -67,5 +65,18 @@ class RiskScannerService
         ]);
 
         return $result->refresh();
+    }
+
+    private function getMatches(RiskScanResult $result, string $name, string $scannerService): array
+    {
+        $webScanner = app($scannerService);
+
+        // Inject risk_scan_result_id only if supported
+        if (method_exists($webScanner, 'withScanResultId'))
+        {
+            $webScanner = $webScanner->withScanResultId($result->id);
+        }
+
+        return $webScanner->scan($name);
     }
 }

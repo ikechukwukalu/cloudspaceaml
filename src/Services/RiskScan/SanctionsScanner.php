@@ -2,25 +2,64 @@
 
 namespace Cloudspace\AML\Services\RiskScan;
 
-class SanctionsScanner
-{
-    public function scan(string $fullName): array
-    {
-        // In future, crawl EFCC/OFAC, UN, etc.
-        // For now, return a dummy match if name contains a known suspicious keyword.
-        $suspicious = ['abacha', 'osama', 'fraud', 'efcc'];
+use Cloudspace\AML\Contracts\WebSearchScannerInterface;
+use Cloudspace\AML\Traits\ResponseData;
+use Illuminate\Support\Facades\Http;
 
-        foreach ($suspicious as $keyword) {
-            if (stripos($fullName, $keyword) !== false) {
-                return [[
-                    'source' => 'OFAC Dummy List',
-                    'match_type' => 'name',
-                    'description' => "Name matched keyword: $keyword",
-                    'confidence' => 90,
-                ]];
+class SanctionsScanner implements WebSearchScannerInterface
+{
+    use ResponseData;
+
+    protected $baseUrl;
+    protected null|int $riskScanResultId = null;
+
+    public function __construct()
+    {
+        $this->baseUrl = config('aml.api_base_url');
+    }
+
+    public function withScanResultId(int $id): static
+    {
+        $this->riskScanResultId = $id;
+        return $this;
+    }
+
+    public function scan(string $fullName, null|int $scanResultId = null): array
+    {
+        $piiData = [
+            'name' => $fullName,
+            'birthDate' => '1962-11-23',
+            'gender' => 'male',
+        ];
+        $whiteList = config('aml.white_list');
+        $optionalArrayList = config('aml.optional_array_list');
+
+        foreach ($whiteList as $value) {
+            if (!array_key_exists($value, $piiData)) {
+                return $this->responseData(false, null, "Missing required field: $value");
             }
         }
 
-        return [];
+        $sanctionData = [
+            'type' => 'person',
+            'name' => $piiData['name'] ?? null,
+            'birthDate' => $piiData['birthDate'] ?? null,
+            'gender' => $piiData['gender'] ?? null,
+            'minMatch' => '0.75',
+        ];
+
+        foreach ($optionalArrayList as $value) {
+            if (array_key_exists($value, $piiData)) {
+                if (!is_array($piiData[$value])) {
+                    return $this->responseData(false, null, "Field '{$value}' must be an array");
+                }
+
+                $sanctionData[$value] = $piiData[$value];
+            }
+        }
+
+        $response = Http::get("{$this->baseUrl}/search", $sanctionData);
+
+        return $this->responseData($response->successful(), $response->body());
     }
 }

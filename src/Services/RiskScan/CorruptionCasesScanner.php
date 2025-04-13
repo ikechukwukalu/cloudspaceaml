@@ -4,17 +4,9 @@ namespace Cloudspace\AML\Services\RiskScan;
 
 use Cloudspace\AML\Models\RiskMatch;
 use Illuminate\Support\Facades\Http;
-use Cloudspace\AML\Contracts\WebSearchScannerInterface;
 
-class CorruptionCasesScanner implements WebSearchScannerInterface
+class CorruptionCasesScanner extends ScannerService
 {
-    protected null|int $riskScanResultId = null;
-
-    public function withScanResultId(int $id): static
-    {
-        $this->riskScanResultId = $id;
-        return $this;
-    }
 
     public function scan(string $fullName, null|int $scanResultId = null): array
     {
@@ -39,11 +31,13 @@ class CorruptionCasesScanner implements WebSearchScannerInterface
 
             if ($found->count() >= 2) {
                 $matches[] = [
+                    'risk_scan_result_id' => $this->riskScanResultId,
                     'source' => 'CorruptionCasesNG',
                     'match_type' => 'corruption registry',
                     'description' => $item['title'] . ' — ' . $item['description'],
                     'confidence' => 90,
                     'source_url' => $item['url'] ?? null,
+                    'match_hash' => md5('CorruptionCasesNG'.'corruption registry'.$item['title'] . ' — ' . $item['description']),
                     'response_payload' => json_encode($item),
                 ];
             }

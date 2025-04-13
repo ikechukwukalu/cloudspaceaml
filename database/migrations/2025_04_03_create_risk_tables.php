@@ -12,6 +12,14 @@ return new class extends Migration {
             $table->string('full_name');
             $table->string('bvn')->nullable();
             $table->string('nin')->nullable();
+            $table->string('other_identifiable_code')->nullable();
+            $table->string('other_identifiable_type')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('gender')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->longText('address')->nullable();
+            $table->string('website')->nullable();
             $table->enum('risk_level', ['low', 'medium', 'high'])->default('low');
             $table->timestamp('scanned_at')->useCurrent();
             $table->timestamps();

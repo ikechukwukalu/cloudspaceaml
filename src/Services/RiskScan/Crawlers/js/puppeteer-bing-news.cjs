@@ -38,7 +38,7 @@ function guessConfidence(text) {
 (async () => {
   const fullName = process.argv[2];
   if (!fullName) {
-    console.error('❌ No name provided');
+    console.error('No name provided');
     process.exit(1);
   }
 
@@ -70,7 +70,7 @@ function guessConfidence(text) {
           title,
           snippet,
           url: href,
-          source: 'Bing Web'
+          source: 'BingWebEngine'
         });
       }
     });

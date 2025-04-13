@@ -3,9 +3,7 @@
 namespace Cloudspace\AML\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Cloudspace\AML\Contracts\WebSearchScannerInterface;
 use Cloudspace\AML\Services\RiskScan\RiskScannerService;
-use Cloudspace\AML\Services\RiskScan\WebSearchScannerResolver;
 
 class RiskScannerServiceProvider extends ServiceProvider
 {
@@ -14,7 +12,5 @@ class RiskScannerServiceProvider extends ServiceProvider
         $this->app->singleton('RiskScanner', function () {
             return new RiskScannerService();
         });
-
-        $this->app->singleton(WebSearchScannerInterface::class, WebSearchScannerResolver::class);
     }
 }
